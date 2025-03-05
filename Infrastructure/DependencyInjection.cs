@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data;
+﻿using Application.Interfaces.Repositories;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,8 @@ namespace Infrastructure
             {
                 options.UseNpgsql(connectionString);
             });
+
+            builder.Services.AddScoped<IWarcraftBuildOrderRepository, BuildOrderRepository>();
         }
     }
 }

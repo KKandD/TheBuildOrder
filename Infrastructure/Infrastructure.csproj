@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
+    <Compile Remove="Data\PostgreSQL\**" />
+    <EmbeddedResource Remove="Data\PostgreSQL\**" />
+    <None Remove="Data\PostgreSQL\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\PostgreSQL\" />
+    <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

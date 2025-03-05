@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces.Services;
+using Application.Models;
+using Presentation.Infrastructure;
 
 namespace Presentation.Endpoints
 {
@@ -10,25 +12,25 @@ namespace Presentation.Endpoints
             app.MapGroup(this)
                 .RequireAuthorization()
                 .MapGet(GetBuildOrders)
-                .MapGet(GetBuildOrderById, "{id}")
-                .MapPost(CreateTodoItem)
-                .MapPut(UpdateTodoItem, "{id}")
-                .MapPut(UpdateTodoItemDetail, "UpdateDetail/{id}")
-                .MapDelete(DeleteBuildOrder, "{id}");
+                .MapGet(GetBuildOrderById, "{id}");
+                //.MapPost(CreateTodoItem)
+                //.MapPut(UpdateTodoItem, "{id}")
+                //.MapPut(UpdateTodoItemDetail, "UpdateDetail/{id}")
+                //.MapDelete(DeleteBuildOrder, "{id}");
         }
 
-        public async Task<IEnumerable<BuildOrder>> GetBuildOrders(I sender)
+        public async Task<IEnumerable<BuildOrderDto>> GetBuildOrders(IBuildOrderService buildOrderService)
         {
-            var result = await sender.Send(query);
+            var buildOrders = await buildOrderService.GetBuildOrders();
 
-            return TypedResults.Ok(result);
+            return buildOrders;
         }
         
-        public async Task<BuildOrder> GetBuildOrderById(ISender sender, [AsParameters] GetTodoItemsWithPaginationQuery query)
+        public async Task<BuildOrderDto> GetBuildOrderById(IBuildOrderService buildOrderService, int id)
         {
-            var result = await sender.Send(query);
+            var buildOrder = await buildOrderService.GetById(id);
 
-            return TypedResults.Ok(result);
+            return buildOrder;
         }
     }
 }
