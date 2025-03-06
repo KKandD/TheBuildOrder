@@ -18,7 +18,7 @@ namespace TheBuildOrder.Endpoints
             group.MapPost("/", CreateWarcraftBuildOrder)
                  .WithName("CreateWarcraftBuildOrder");
 
-            group.MapPut("/{id:int}", UpdateWarcraftBuildOrder)
+            group.MapPut("/", UpdateWarcraftBuildOrder)
                  .WithName("UpdateWarcraftBuildOrder");
 
             group.MapDelete("/{id:int}", DeleteWarcraftBuildOrder)
@@ -27,10 +27,11 @@ namespace TheBuildOrder.Endpoints
             return group;
         }
 
-        public static async Task<Ok<IEnumerable<WarcraftBuildOrderDto>>> GetWarcraftBuildOrders(IWarcraftBuildOrderService buildOrderService)
+        public static async Task<Results<Ok<IEnumerable<WarcraftBuildOrderDto>>, InternalServerError>> GetWarcraftBuildOrders(IWarcraftBuildOrderService buildOrderService)
         {
             var buildOrders = await buildOrderService.GetWarcraftBuildOrders();
-            return TypedResults.Ok(buildOrders);
+
+            return buildOrders is not null ? TypedResults.Ok(buildOrders) : TypedResults.InternalServerError();
         }
 
         public static async Task<Results<Ok<WarcraftBuildOrderDto>, NotFound, BadRequest>> GetWarcraftBuildOrderById(IWarcraftBuildOrderService buildOrderService, int id)
@@ -42,7 +43,7 @@ namespace TheBuildOrder.Endpoints
             return buildOrder is not null ? TypedResults.Ok(buildOrder) : TypedResults.NotFound();
         }
 
-        public static async Task<Results<Created<WarcraftBuildOrderDto>, BadRequest>> CreateWarcraftBuildOrder(IWarcraftBuildOrderService buildOrderService, [FromBody]WarcraftBuildOrderDto dto)
+        public static async Task<Results<Created, BadRequest>> CreateWarcraftBuildOrder(IWarcraftBuildOrderService buildOrderService, [FromBody]WarcraftBuildOrderDto dto)
         {
             if (dto is null)
                 return TypedResults.BadRequest();
@@ -52,17 +53,27 @@ namespace TheBuildOrder.Endpoints
             if (createdBuildOrder is null)
                 return TypedResults.BadRequest();
 
-            return TypedResults.Created($"/api/BuildOrders/{createdBuildOrder.Id}", createdBuildOrder);
+            return TypedResults.Created($"/api/buildOrders/{createdBuildOrder.Id}");
         }
 
-        public static async Task<BuildOrderDto> UpdateWarcraftBuildOrder(IWarcraftBuildOrderService buildOrderService, int id, WarcraftBuildOrderDto dto)
+        public static async Task<Results<CreatedAtRoute, BadRequest>> UpdateWarcraftBuildOrder(IWarcraftBuildOrderService buildOrderService, [FromBody]WarcraftBuildOrderDto dto)
         {
-            throw new NotImplementedException();
+            if(dto is null)
+                return TypedResults.BadRequest();
+
+            var updatedBuildOrder = await buildOrderService.UpdateWarcraftBuildOrder(dto);
+
+            if (updatedBuildOrder is null)
+                return TypedResults.BadRequest();
+
+            return TypedResults.CreatedAtRoute(routeName: $"/api/BuildOrders/{updatedBuildOrder.Id}");
         }
 
-        public static async Task<BuildOrderDto> DeleteWarcraftBuildOrder(IWarcraftBuildOrderService buildOrderService, int id)
+        public static async Task<Results<Ok, BadRequest>> DeleteWarcraftBuildOrder(IWarcraftBuildOrderService buildOrderService, [FromBody]WarcraftBuildOrderDto dto)
         {
-            throw new NotImplementedException();
+            await buildOrderService.DeleteWarcraftBuildOrder(dto);
+
+            return TypedResults.Ok();
         }
     }
 

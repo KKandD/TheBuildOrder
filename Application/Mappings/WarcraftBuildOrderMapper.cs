@@ -6,8 +6,11 @@ namespace Application.Mappings
 {
     public class WarcraftBuildOrderMapper : IWarcraftBuildOrderMapper
     {
-        public WarcraftBuildOrderDto MapToDto(WarcraftBuildOrder entity)
+        public WarcraftBuildOrderDto? MapToDto(WarcraftBuildOrder? entity)
         {
+            if (entity is null)
+                return default;
+
             return new WarcraftBuildOrderDto
             {
                 Id = entity.Id,
@@ -20,8 +23,11 @@ namespace Application.Mappings
             };
         }
 
-        public WarcraftBuildOrder MapToEntity(WarcraftBuildOrderDto dto)
+        public WarcraftBuildOrder? MapToEntity(WarcraftBuildOrderDto? dto)
         {
+            if (dto is null)
+                return default;
+
             return new WarcraftBuildOrder
             {
                 Id = dto.Id,

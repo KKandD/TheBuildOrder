@@ -17,32 +17,32 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<WarcraftBuildOrderDto>> GetWarcraftBuildOrders()
+        public async Task<IEnumerable<WarcraftBuildOrderDto>?> GetWarcraftBuildOrders()
         {
             var buildOrders = await _warcraftBuildOrderRepository.GetAll();
 
             return buildOrders.Select(_mapper.MapToDto).ToList();
         }
 
-        public async Task<WarcraftBuildOrderDto> GetWarcraftBuildOrderById(int id)
+        public async Task<WarcraftBuildOrderDto?> GetWarcraftBuildOrderById(int id)
         {
             var buildOrder = await _warcraftBuildOrderRepository.GetById(id);
 
-            return _mapper.MapToDto(buildOrder);
+            return buildOrder is not null ? _mapper.MapToDto(buildOrder) : null;
         }
 
-        public async Task<WarcraftBuildOrderDto> AddWarcraftBuildOrder(WarcraftBuildOrderDto dto)
+        public async Task<WarcraftBuildOrderDto?> AddWarcraftBuildOrder(WarcraftBuildOrderDto dto)
         {
             var createdBuildOrder = await _warcraftBuildOrderRepository.Add(_mapper.MapToEntity(dto));
 
-            return _mapper.MapToDto(createdBuildOrder);
+            return createdBuildOrder is not null ? _mapper.MapToDto(createdBuildOrder) : null;
         }
 
-        public async Task<WarcraftBuildOrderDto> UpdateWarcraftBuildOrder(WarcraftBuildOrderDto dto)
+        public async Task<WarcraftBuildOrderDto?> UpdateWarcraftBuildOrder(WarcraftBuildOrderDto dto)
         {
             var updatedBuildOrder = await _warcraftBuildOrderRepository.Update(_mapper.MapToEntity(dto));
 
-            return _mapper.MapToDto(updatedBuildOrder);
+            return updatedBuildOrder is not null ? _mapper.MapToDto(updatedBuildOrder) : null;
         }
 
         public async Task DeleteWarcraftBuildOrder(WarcraftBuildOrderDto dto)

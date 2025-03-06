@@ -16,6 +16,7 @@ namespace Infrastructure.Repositories
 
         public async Task<WarcraftBuildOrder> Add(WarcraftBuildOrder entity)
         {
+            entity.Id = 0;
             await _dbContext.Set<WarcraftBuildOrder>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
@@ -27,7 +28,7 @@ namespace Infrastructure.Repositories
             return await _dbContext.Set<WarcraftBuildOrder>().ToListAsync(cancellationToken);
         }
 
-        public async Task<WarcraftBuildOrder> GetById(int id, CancellationToken cancellationToken = default)
+        public async Task<WarcraftBuildOrder?> GetById(int id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Set<WarcraftBuildOrder>().FindAsync(id, cancellationToken);
         }
